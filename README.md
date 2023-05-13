@@ -1,46 +1,41 @@
-# Getting Started with Create React App
+# ATVII-WB
+## Atividade 2 (WB) - Programação Orientada a Objetos - Fatec SJC
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+-------------------------------------
+## Descrição da atividade
 
-## Available Scripts
+O  time  de  desenvolvimento  da  tua  empresa  impôs  uma  regra  para  construção  da  GUI  do  sistema.  Utilizar  a biblioteca  react  com  componentes  de  classe,  sempre.Mas,  você  percebeu  a  necessidade  de  avaliar  o desenvolvimento com  hooks.  Além  disso,  descobriu-se  que  existe uma  versãodo  pré-projeto  que  utilizou hooks e somente componentes de função.
+O  objetivo  é  construir  a  mesma  GUI,  feita  anteriormente  com  componentes  de  classe,  mas  agora  com componentes  de  função  e,  se  necessário,  utilizando  hooks  para  controle do  ciclo  de  vida  dos  componentes.
+Para  este  pré-projeto,  deve-se  utilizar  as  mesmas  bibliotecas,  citadas  no  projeto  anterior,  com  as  mesmas ressalvase versão.
 
-In the project directory, you can run:
+## Como usar? 
 
-### `npm start`
+* Inicialmente, é necessário rodar o comando "npm install" para instalar as dependências do projeto.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+* Depois, basta rodar o comando "npm run start" no console do terminal e a aplicação GUI,desenvolida em REACT e MATERIALIZE,carregará automaticamente no endereço http://localhost:3000/
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Funcionalidades
 
-### `npm test`
+* O site possui 3 opções no navbar principal, as quais representam as 3 entidades mais importantes do sistema: consumos, clientes e produtos/serviços.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+* Cada uma dessas entidades possui 3 telas distintas, cada uma voltada para uma finalidade: busca/listagem, cadastro de novos registros e alteração de dados.
 
-### `npm run build`
+### Tela de busca/listagem de clientes
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+![image](https://user-images.githubusercontent.com/30990193/232953782-55bd88a4-407d-419a-9b8c-20474305eaa5.png)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Tela de cadastro de itens
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![image](https://user-images.githubusercontent.com/30990193/232955096-9700da15-c8b9-40eb-80d8-f2a551b51044.png)
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Tela de alteração de clientes
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+![image](https://user-images.githubusercontent.com/30990193/232955034-1d5c7f7e-81cd-46d3-b3a0-6d02d2833ffa.png)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+* É importante destacar que as funções de busca, edição e exclusão de registros não foram desenvolvidas e não possuem vínculo com um back-end e nem uma base de dados. O objetivo principal foi a criação das interfaces em HTML, as transições das telas feitas com react, e também a aplicação dos estilos em cascata por meio da biblioteca materialize, se atentando também ao layout responsivo (mobile). 
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Layout Mobile
 
-## Learn More
+![image](https://user-images.githubusercontent.com/30990193/233852688-1c0202e9-8e11-44a8-ae18-2da178c8739f.png)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
