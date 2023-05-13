@@ -11,17 +11,23 @@ import FormularioCadastroProdutoServico from "./formularioCadastroProdutoServico
 import FormularioCadastroConsumo from "./formularioCadastroConsumo";
 
 type state = {
-    tela: string
+    tela: string,
+    dadosClienteAtualizacao: any
 }
 
 export default class Roteador extends Component<{}, state> {
     constructor(props: {} | Readonly<{}>) {
         super(props)
         this.state = {
-            tela: 'Clientes'
+            tela: 'Clientes',
+            dadosClienteAtualizacao: []
         }
         this.selecionarView = this.selecionarView.bind(this)
     }
+
+    handleDataChange = (dados) => {
+        this.setState({ dadosClienteAtualizacao: dados });
+    };
 
     selecionarView(novaTela: string, evento: Event) {
         evento.preventDefault()
@@ -40,7 +46,7 @@ export default class Roteador extends Component<{}, state> {
             return (
                 <>
                     {barraNavegacao}
-                    <ListaCliente seletorView={this.selecionarView} titulo="Clientes" tema="blue lighten-2" clientes={listaClientes} />
+                    <ListaCliente seletorView={this.selecionarView} dadosClienteAtualizacao={this.state.dadosClienteAtualizacao} onDataChange={this.handleDataChange} titulo="Clientes" tema="blue lighten-2" />
                 </>
             )
         } else if (this.state.tela === 'Produtos/Serviços') {
@@ -62,7 +68,7 @@ export default class Roteador extends Component<{}, state> {
             return (
                 <>
                     {barraNavegacao}
-                    <FormularioCadastroCliente titulo="Cadastro de Cliente" tema="blue lighten-2" />
+                    <FormularioCadastroCliente titulo="Cadastro de Cliente" tema="blue lighten-2" seletorView={this.selecionarView}  dadosClienteAtualizacao={this.state.dadosClienteAtualizacao} />
                 </>
             )
 
@@ -86,7 +92,7 @@ export default class Roteador extends Component<{}, state> {
             return (
                 <>
                     {barraNavegacao}
-                    <FormularioCadastroCliente titulo="Alteração de Cliente" tema="blue lighten-2" />
+                    <FormularioCadastroCliente titulo="Alteração de Cliente" tema="blue lighten-2" seletorView={this.selecionarView} dadosClienteAtualizacao={this.state.dadosClienteAtualizacao} />
                 </>
             )
 

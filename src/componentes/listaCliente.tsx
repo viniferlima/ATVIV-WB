@@ -1,33 +1,95 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { Component } from "react";
 import 'materialize-css/dist/css/materialize.min.css'
-import { Cliente } from "../models/cliente";
+import '../CSS/estilo.css';
+import BuscadorClientes from "../buscadores/buscadorClientes";
+import RemovedorCliente from "../removedores/removedorCliente";
+import RemovedorClienteLocal from "../removedores/removedorClienteLocal";
 
 type props = {
     titulo: string,
     tema: string,
-    clientes: Cliente[],
-    seletorView: Function
+    dadosClienteAtualizacao: any,
+    seletorView: Function,
+    onDataChange: Function
 }
 
-type state = {      
-    tela: string    
-}    
-
+type state = {
+    tela: string,
+    clientes: any[],
+}
 
 export default class ListaCliente extends Component<props, state> {
+    private todosClientes: any[]
+
+    handleChange = (dados) => {
+        const dadosCliente = dados;
+        this.props.onDataChange(dados);
+    };
+
+    constructor(props) {
+        super(props)
+        this.state = { tela: 'Clientes', clientes: [] }
+        this.buscarClientePeloID = this.buscarClientePeloID.bind(this)
+    }
 
     componentDidMount() {
         M.AutoInit();
+        this.buscarClientes();
     }
 
-    render() {
-        let estiloTitulo = `center-align blue-text`
-        let estiloBotoesAcao = `btn-floating btn-small waves-effect waves-light btn tooltipped`
-        let estiloBotaoNovo = `btn waves-effect waves-light ${this.props.tema}`
-        let estiloBotaoEditar = `${estiloBotoesAcao} light-blue`
-        let estiloBotaoDeletar = `${estiloBotoesAcao} red`
+    public buscarClientes() {
+        let buscadorClientes = new BuscadorClientes()
+        const clientes = buscadorClientes.buscar()
+        clientes.then(clientes => {
+            this.setState({ clientes: clientes })
+            this.todosClientes = clientes
+        })
+    }
+
+    public buscarClientePeloID(id: any) {
+        const idPesquisado = id.target.value
+        if (idPesquisado != null && idPesquisado.toString().trim() != '') {
+            let buscadorClientes = new BuscadorClientes()
+            const retorno = buscadorClientes.buscarPeloID(idPesquisado)
+            retorno.then((clientePesquisado) => {
+                
+                if (clientePesquisado?.id != null) {
+                    let resultadoPesquisa: any[] = []
+                    resultadoPesquisa.push(clientePesquisado)
+                    this.setState(prevState => ({
+                        clientes: resultadoPesquisa,
+                    }));
+                } else {
+                    this.showToast(`Não foi encontrado nenhum cliente com o ID ${idPesquisado}`)
+                }
+            })
+        } else {
+            this.setState({ clientes: this.todosClientes })
+        }
+    }
+
+
+    public excluirRemoto(idCliente: string) {
+        let removedor = new RemovedorCliente()
+        removedor.remover({ id: idCliente })
+    }
+
+    public excluirLocal(id: string, e: any) {
+        e.preventDefault()
+        let removedorLocal = new RemovedorClienteLocal()
+        let clientes = removedorLocal.remover(this.state.clientes, id)
+        this.setState({
+            clientes: clientes
+        })
+        this.todosClientes = clientes
+        this.excluirRemoto(id)
+    }
+
+    renderCamposPesquisa() {
+        let estiloTitulo = `center-align blue-text teste`
         let titulo = `${this.props.titulo}`
+
         return (
             <>
                 <h5 className={estiloTitulo}>{titulo}</h5>
@@ -35,7 +97,7 @@ export default class ListaCliente extends Component<props, state> {
                 <div className="row">
                     <div className="input-field col s6">
                         <i className="material-icons prefix">search</i>
-                        <input id="icon_prefix" type="text" className="validate" />
+                        <input id="icon_prefix" type="text" className="validate" onChange={(e) => this.buscarClientePeloID(e)} />
                         <label htmlFor="icon_prefix">Busca</label>
                     </div>
                     <div className="input-field col s6">
@@ -48,44 +110,94 @@ export default class ListaCliente extends Component<props, state> {
                         </select>
                     </div>
                 </div>
+            </>
+        )
+    }
 
-                <table className="highlight centered responsive-table">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>CPF</th>
-                            <th>Idade</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
+    renderBotaoAdicionar() {
+        let estiloBotaoNovo = `btn waves-effect waves-light ${this.props.tema}`
 
-                    <tbody>
-                        {this.props.clientes.map((cliente, i) => (
-                            <tr>
-                                <td>{cliente.getNome()}</td>
-                                <td>{cliente.getCpf()}</td>
-                                <td>{cliente.getIdade()}</td>
-                                <td>
-                                    <a className={estiloBotaoEditar} style={{marginRight: "2px"}} href="#!"  onClick={(e) => this.props.seletorView('Alteração de Cliente', e)} data-position="left" data-tooltip="Alterar">
-                                        <i className="material-icons">edit</i>
-                                    </a>
-                                    <a className={estiloBotaoDeletar} href="#!"  onClick={() => this.showToast()} data-position="right" data-tooltip="Deletar">
-                                        <i className="material-icons">delete</i>
-                                    </a>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-
-                <button onClick={(e) => this.props.seletorView('Novo Cliente', e)} className={estiloBotaoNovo} style={{margin: "5px"}} type="submit" name="action">Novo
+        return (
+            <>
+                <button onClick={(e) => this.props.seletorView('Novo Cliente', e)} className={estiloBotaoNovo} style={{ margin: "5px" }} type="submit" name="action">Novo
                     <i className="material-icons right">add</i>
                 </button>
             </>
         )
     }
 
-    showToast() {
-        M.toast({ html: 'Apenas as transições de tela e o layout foram desenvolvidos!' })
+    render() {
+        let estiloBotoesAcao = `btn-floating btn-small waves-effect waves-light btn tooltipped`
+        let estiloBotaoEditar = `${estiloBotoesAcao} light-blue`
+        let estiloBotaoDeletar = `${estiloBotoesAcao} red`
+        let quantidadeClientes = this.state.clientes.length
+        let camposPesquisa = this.renderCamposPesquisa()
+        let botaoAdicionar = this.renderBotaoAdicionar()
+
+
+        if (quantidadeClientes > 0) {
+            let listaClientes = this.state.clientes.map((cliente, i) => (
+                <tr key={i}>
+                    <td>{cliente.nome}</td>
+                    <td>{cliente.sobreNome}</td>
+                    <td>{this.getNumeroTelefoneFormatado(cliente.telefones[0])}</td>
+                    <td>
+                        <a className={estiloBotaoEditar} style={{ marginRight: "2px" }} href="#!" onClick={(e) => this.abreTelaAtualizacao(e, cliente)} data-position="left" data-tooltip="Alterar">
+                            <i className="material-icons">edit</i>
+                        </a>
+                        <a className={estiloBotaoDeletar} href="" target={"_self"} onClick={(e) => this.excluirLocal(cliente['id'], e)} data-position="right" data-tooltip="Deletar">
+                            <i className="material-icons">delete</i>
+                        </a>
+                    </td>
+                </tr>
+            ))
+
+            return (
+                <>
+                    {camposPesquisa}
+                    <table className="highlight centered responsive-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Sobrenome</th>
+                                <th>Telefone</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {listaClientes}
+                        </tbody>
+                    </table>
+
+                    {botaoAdicionar}
+                </>
+            )
+        }
+        else {
+            return (
+                <>
+                    {camposPesquisa}
+                    {botaoAdicionar}
+                </>
+            )
+        }
+    }
+
+    abreTelaAtualizacao(evento: any, cliente: any) {
+        this.handleChange(cliente)
+        this.props.seletorView('Alteração de Cliente', evento)
+    }
+
+    showToast(mensagem: string) {
+        M.toast({ html: mensagem })
+    }
+
+    getNumeroTelefoneFormatado(telefone: any): string {
+        if (telefone == null) {
+            return 'Sem registro'
+        } else {
+            return `(${telefone.ddd}) ${telefone.numero}`
+        }
     }
 }
